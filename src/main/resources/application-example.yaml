@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: endereço do banco
+    username: usuário do banco
+    password: senha do banco
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true

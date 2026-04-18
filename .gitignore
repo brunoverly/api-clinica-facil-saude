@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### application.properties-dev.yaml###
+src/main/resources/application-dev.yml
