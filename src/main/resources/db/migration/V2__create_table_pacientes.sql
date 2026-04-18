@@ -1,0 +1,9 @@
+CREATE TABLE pacientes
+(
+    id BIGSERIAL PRIMARY KEY,
+    nome VARCHAR(250),
+    email VARCHAR(250) UNIQUE,
+    cpf VARCHAR(11) UNIQUE,
+    telefone VARCHAR(20),
+    ativo BOOLEAN DEFAULT TRUE
+)

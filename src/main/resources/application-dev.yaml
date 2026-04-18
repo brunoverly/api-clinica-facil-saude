@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/clinica
+    url: jdbc:postgresql://localhost:5432/clinica-saude-facil
     username: postgres
     password: yH7UFQ47
 

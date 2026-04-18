@@ -23,6 +23,7 @@ public class Agendamento {
     @ManyToOne(fetch = FetchType.LAZY)
     Paciente paciente;
     LocalDateTime dataAgendamento;
+    @Enumerated(EnumType.STRING)
     StatusAgendamento status;
     String motivoCancelamento;
 }

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 @Service
 public class AgendamentoService {
     @Autowired
-    private AgendamentoService service;
+    private AgendamentoRepository repository;
 }
