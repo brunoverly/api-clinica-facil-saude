@@ -1,4 +1,4 @@
-package br.com.ClinicaFacilSaude.enums;
+package br.com.ClinicaFacilSaude.medico;
 
 public enum Especialidade {
     CARDIOLOGIA,

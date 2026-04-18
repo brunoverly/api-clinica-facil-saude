@@ -1,4 +1,4 @@
-package br.com.ClinicaFacilSaude.entity;
+package br.com.ClinicaFacilSaude.paciente;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 @NoArgsConstructor
 @Entity
 @Table(name = "pacientes")
-public class PacienteEntity {
+public class Paciente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

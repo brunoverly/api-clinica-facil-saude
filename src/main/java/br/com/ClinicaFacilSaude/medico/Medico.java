@@ -1,6 +1,5 @@
-package br.com.ClinicaFacilSaude.entity;
+package br.com.ClinicaFacilSaude.medico;
 
-import br.com.ClinicaFacilSaude.enums.Especialidade;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "medicos")
-public class MedicoEntity {
+public class Medico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
