@@ -4,13 +4,13 @@ import br.com.ClinicaFacilSaude.Usuario.UsuarioRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record UsuarioResponseDto(
-        @Schema(description = "ID do usuário", example = "1")
+        @Schema(example = "1")
         Long id,
-        @Schema(description = "Nome do usuário", example = "Bruno Martins")
+        @Schema(example = "Bruno Martins")
         String nome,
-        @Schema(description = "Email do usuário", example = "bruno@email.com")
+        @Schema(example = "bruno@email.com")
         String email,
-        @Schema(description = "ADMIN ou USER", example = "USER")
+        @Schema(example = "USER")
         UsuarioRole role
 ) {
 }

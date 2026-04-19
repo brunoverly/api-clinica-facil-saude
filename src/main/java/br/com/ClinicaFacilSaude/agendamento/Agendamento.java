@@ -28,4 +28,9 @@ public class Agendamento {
     @Enumerated(EnumType.STRING)
     StatusAgendamento status;
     String motivoCancelamento;
+
+    @PrePersist
+    public void onCreate() {
+        this.status = StatusAgendamento.AGENDADO;
+    }
 }
