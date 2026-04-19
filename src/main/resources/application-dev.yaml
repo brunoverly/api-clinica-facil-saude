@@ -8,3 +8,6 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: true
+
+keys:
+  secret: a9F3kLm2Qx7ZrP8tVwY1bN4cD6eHjK5sU0GfR9pXyWqT2mC8zLhJvB7nE3dA5uI

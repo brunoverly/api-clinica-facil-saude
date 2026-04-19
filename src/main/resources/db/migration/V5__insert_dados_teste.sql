@@ -58,3 +58,15 @@ INSERT INTO agendamentos (data_agendamento, status, motivo_cancelamento, medico_
                                                                                                      ('2026-04-25 10:00:00', 'CANCELADO', 'Horário indisponível', 8, 10),
                                                                                                      ('2026-04-25 11:00:00', 'AGENDADO', NULL, 9, 1),
                                                                                                      ('2026-04-25 13:00:00', 'REALIZADO', NULL, 10, 2);
+
+INSERT INTO usuarios (nome, email, senha, role) VALUES
+                                                    ('Bruno Silva', 'bruno@email.com', '$2a$12$DvUOMfHaaLjhc/z5XnEhwuQO/grtzy1bDsYHdqQBbe8eiqxLch0He', 'ADMIN'),
+                                                    ('Ana Souza', 'ana@email.com', '$2a$12$DvUOMfHaaLjhc/z5XnEhwuQO/grtzy1bDsYHdqQBbe8eiqxLch0He', 'USER'),
+                                                    ('Carlos Lima', 'carlos@email.com', '$2a$12$DvUOMfHaaLjhc/z5XnEhwuQO/grtzy1bDsYHdqQBbe8eiqxLch0He', 'USER'),
+                                                    ('Fernanda Costa', 'fernanda@email.com', '$2a$12$DvUOMfHaaLjhc/z5XnEhwuQO/grtzy1bDsYHdqQBbe8eiqxLch0He', 'USER'),
+                                                    ('João Pedro', 'joao@email.com', '$2a$12$DvUOMfHaaLjhc/z5XnEhwuQO/grtzy1bDsYHdqQBbe8eiqxLch0He', 'USER'),
+                                                    ('Mariana Alves', 'mariana@email.com', '$2a$12$DvUOMfHaaLjhc/z5XnEhwuQO/grtzy1bDsYHdqQBbe8eiqxLch0He', 'USER'),
+                                                    ('Lucas Martins', 'lucas@email.com', '$2a$12$DvUOMfHaaLjhc/z5XnEhwuQO/grtzy1bDsYHdqQBbe8eiqxLch0He', 'USER'),
+                                                    ('Patricia Gomes', 'patricia@email.com', '$2a$12$DvUOMfHaaLjhc/z5XnEhwuQO/grtzy1bDsYHdqQBbe8eiqxLch0He', 'USER'),
+                                                    ('Rafael Dias', 'rafael@email.com', '$2a$12$DvUOMfHaaLjhc/z5XnEhwuQO/grtzy1bDsYHdqQBbe8eiqxLch0He', 'USER'),
+                                                    ('Juliana Rocha', 'juliana@email.com', '$2a$12$DvUOMfHaaLjhc/z5XnEhwuQO/grtzy1bDsYHdqQBbe8eiqxLch0He', 'USER');
