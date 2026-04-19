@@ -31,7 +31,7 @@ public class AuthService {
     private JwtService jwtService;
 
 
-    public ResponseEntity<AuthResponseDto> create(UsuarioRequestDto dto) throws BadRequestException {
+    public AuthResponseDto create(UsuarioRequestDto dto) throws BadRequestException {
         if(!dto.senha().equals(dto.senha())) {
             throw new BadRequestException("Senhas informadas não conferem");
         }
@@ -45,10 +45,10 @@ public class AuthService {
         repository.save(usuario);
 
         AuthResponseDto auth = new  AuthResponseDto(usuario.getNome(), jwtService.generateToken(usuario));
-        return ResponseEntity.ok().body(auth);
+        return auth;
     }
 
-    public ResponseEntity<AuthResponseDto> login(AuthRequestDto dto) throws Exception {
+    public AuthResponseDto login(AuthRequestDto dto) throws Exception {
         Usuario usuario = repository.findByEmail(dto.email()).orElseThrow(
                 () ->  new EntityNotFoundException("Email não localizado no banco de dados"));
 
@@ -57,7 +57,7 @@ public class AuthService {
         }
 
         AuthResponseDto auth = new  AuthResponseDto(usuario.getNome(), jwtService.generateToken(usuario));
-        return ResponseEntity.ok().body(auth);
+        return auth;
 
 
     }

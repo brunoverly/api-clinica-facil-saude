@@ -57,7 +57,7 @@ public class AuthController {
     })
     @PostMapping("/registro")
     public ResponseEntity<AuthResponseDto> create(@Valid @RequestBody UsuarioRequestDto dto) throws BadRequestException {
-        return authService.create(dto);
+        return ResponseEntity.ok().body(authService.create(dto));
     }
 
 
@@ -86,7 +86,7 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto dto) throws Exception {
-        return authService.login(dto);
+        return ResponseEntity.ok().body(authService.login(dto));
     }
 }
 
