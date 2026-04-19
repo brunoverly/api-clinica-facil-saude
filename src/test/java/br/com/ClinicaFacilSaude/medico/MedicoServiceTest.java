@@ -33,14 +33,14 @@ public class MedicoServiceTest {
     private MedicoService service;
 
     private Medico criarMedico() {
-        Medico medico = new Medico();
-        medico.setId(1L);
-        medico.setNome("João Silva");
-        medico.setEmail("joaosilva@email.com");
-        medico.setCrm("12345678");
-        medico.setEspecialidade(Especialidade.CARDIOLOGIA);
-        medico.setAtivo(true);
-        return medico;
+        return Medico.builder()
+                .id(1L)
+                .nome("João Silva")
+                .email("joaosilva@email.com")
+                .crm("12345678")
+                .especialidade(Especialidade.CARDIOLOGIA)
+                .ativo(true)
+                .build();
     }
     private MedicoResponseDto criarMedicoResponseDtoV1() {
         MedicoResponseDto dtoResponse = new MedicoResponseDto(
@@ -87,23 +87,22 @@ public class MedicoServiceTest {
     @Test
     void deveCriarMedicoComSucesso() {
         // ARRANGE
-        MedicoRequestDto dto = criarMedicoRequestDtoV1();
+        MedicoRequestDto dtoRequest = criarMedicoRequestDtoV1();
         Medico medico = criarMedico();
+        MedicoResponseDto dtoResponse = criarMedicoResponseDtoV1();
 
-        MedicoResponseDto responseDto = mock(MedicoResponseDto.class);
-
-        when(repository.existsByEmailOrCrm(dto.email(), dto.crm())).thenReturn(false);
-        when(mapper.toEntity(dto)).thenReturn(medico);
+        when(repository.existsByEmailOrCrm(dtoRequest.email(), dtoRequest.crm())).thenReturn(false);
+        when(mapper.toEntity(dtoRequest)).thenReturn(medico);
         when(repository.save(medico)).thenReturn(medico);
-        when(mapper.toResponse(medico)).thenReturn(responseDto);
+        when(mapper.toResponse(medico)).thenReturn(dtoResponse);
 
         // ACT
-        MedicoResponseDto response = service.create(dto);
+        MedicoResponseDto response = service.create(dtoRequest);
 
         // ASSERT
-        assertEquals(responseDto, response);
-        verify(repository).existsByEmailOrCrm(dto.email(), dto.crm());
-        verify(mapper).toEntity(dto);
+        assertEquals(response, dtoResponse);
+        verify(repository).existsByEmailOrCrm(dtoRequest.email(), dtoRequest.crm());
+        verify(mapper).toEntity(dtoRequest);
         verify(repository).save(medico);
         verify(mapper).toResponse(medico);
     }
@@ -111,13 +110,13 @@ public class MedicoServiceTest {
     @Test
     void deveCriarMedicoComErroDeEmailOuCrm() {
         //ARRANGE
-        MedicoRequestDto dto = criarMedicoRequestDtoV1();
+        MedicoRequestDto dtoRequest = criarMedicoRequestDtoV1();
 
         //ACT
-        when(repository.existsByEmailOrCrm(dto.email(), dto.crm())).thenReturn(true);
+        when(repository.existsByEmailOrCrm(dtoRequest.email(), dtoRequest.crm())).thenReturn(true);
 
         //ASSERT
-        assertThrows(ConflitoDeDadosException.class, () -> service.create(dto));
+        assertThrows(ConflitoDeDadosException.class, () -> service.create(dtoRequest));
         verify(repository, never()).save(any());
     }
 
@@ -166,19 +165,19 @@ public class MedicoServiceTest {
 
         Medico medico = criarMedico();
 
-        MedicoResponseDto dto = criarMedicoResponseDtoV1();
+        MedicoResponseDto dtoResponse = criarMedicoResponseDtoV1();
 
-        Page<Medico> pageMedicos = new PageImpl<>(List.of(medico));
+        Page<Medico> medicos = new PageImpl<>(List.of(medico));
 
         //ACT
-        when(repository.findAllByAtivoTrue(pageable)).thenReturn(pageMedicos);
-        when(mapper.toResponse(medico)).thenReturn(dto);
+        when(repository.findAllByAtivoTrue(pageable)).thenReturn(medicos);
+        when(mapper.toResponse(medico)).thenReturn(dtoResponse);
 
         Page<MedicoResponseDto> response = service.findAll(pageable);
 
         //ASSERT
         assertEquals(1, response.getTotalElements());
-        assertEquals(dto, response.getContent().get(0));
+        assertEquals(dtoResponse, response.getContent().get(0));
 
         verify(repository).findAllByAtivoTrue(pageable);
         verify(mapper).toResponse(medico);

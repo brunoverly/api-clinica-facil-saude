@@ -33,7 +33,7 @@ public class AgendamentoService {
     @Autowired
     private AgendamentoMapper mapper;
 
-    public ResponseEntity<AgendamentoResponseDto> create(@Valid AgendamentoRequestDto dto) throws BadRequestException {
+    public AgendamentoResponseDto create(@Valid AgendamentoRequestDto dto) throws BadRequestException {
         verificarHorarioComercial(dto);
 
 
@@ -53,15 +53,64 @@ public class AgendamentoService {
 
         repository.save(agendamento);
 
-        URI uri =  ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(agendamento.getId())
-                .toUri();
-
-        return ResponseEntity.created(uri).body(mapper.toResponse(agendamento));
+        return mapper.toResponse(agendamento);
     }
 
+    public List<AgendamentoResponseDto> findAll(Long medico, Long paciente, LocalDateTime inicio, LocalDateTime fim) {
+        Specification<Agendamento> spec = AgendamentoSpecification.temMedico(medico)
+                .and(AgendamentoSpecification.temPaciente(paciente))
+                .and(AgendamentoSpecification.dataMaior(inicio))
+                .and(AgendamentoSpecification.dataMenor(fim));
 
+        List<Agendamento> agendamentos = repository.findAll(spec);
+
+        return agendamentos.stream().map(mapper::toResponse).toList();
+    }
+
+    public AgendamentoResponseDto findById(Long id) {
+        Agendamento agendamento = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Agendamento com id {" + id + "} não localizado"));
+        return mapper.toResponse(agendamento);
+    }
+
+    public void cancel(AgendamentoRequestDto dto, Long id) throws BadRequestException {
+        Agendamento agendamento = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Agendamento com id {" + id + "} não localizado"));
+
+        verificarCancelamento(dto, agendamento);
+
+        agendamento.setStatus(StatusAgendamento.CANCELADO);
+        agendamento.setMotivoCancelamento(dto.motivoCancelamento());
+        repository.save(agendamento);
+    }
+
+    private static void verificarCancelamento(AgendamentoRequestDto dto, Agendamento agendamento) throws BadRequestException {
+        if(dto.motivoCancelamento() == null || dto.motivoCancelamento().isBlank()){
+            throw new BadRequestException("Motivo do cancelamento deve ser informado na requisição");
+        }
+        if(agendamento.getStatus().equals(StatusAgendamento.CANCELADO)){
+            throw new BadRequestException("Agendamento com id {" + agendamento.getId() + "} já consta como cancelado");
+        }
+        Duration duration = Duration.between(LocalDateTime.now(), agendamento.getDataAgendamento());
+        if(duration.toHours() <= 24){
+            throw new BadRequestException("O cancelamento não respeita o tempo mínimo de 24 horas");
+        }
+    }
+    private void verificarAgendaMedicoEPaciente(AgendamentoRequestDto dto, Medico medico, Paciente paciente) throws BadRequestException {
+
+        LocalDateTime inicio = dto.dataAgendamento().withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime fim = inicio.plusHours(1);
+
+        boolean medicoTemAgendamento = repository.medicoTemAgendamento(medico.getId(),StatusAgendamento.AGENDADO, inicio, fim);
+        boolean pacienteTemAgendamento = repository.pacienteTemAgendamento(paciente.getId(), StatusAgendamento.AGENDADO, inicio,fim);
+
+        if(medicoTemAgendamento){
+            throw new ConflitoDeDadosException("Médico {"+ medico.getNome()+"} já possui uma consulta agendada neste horário");
+        }
+        if(pacienteTemAgendamento){
+            throw new ConflitoDeDadosException("Paciente {"+ paciente.getNome()+"} já possui uma consulta agendada neste horário");
+        }
+    }
     public void verificarHorarioComercial(AgendamentoRequestDto dto) throws BadRequestException {
         DayOfWeek diaDaSemana = dto.dataAgendamento().getDayOfWeek();
         if(diaDaSemana.equals(DayOfWeek.SUNDAY)){
@@ -77,65 +126,5 @@ public class AgendamentoService {
             throw new ConflitoDeDadosException("Consulta agendada não respeita o intervalo de 30 min de antecedência");
         }
 
-    }
-
-    private void verificarAgendaMedicoEPaciente(AgendamentoRequestDto dto, Medico medico, Paciente paciente) throws BadRequestException {
-
-
-        LocalDateTime inicio = dto.dataAgendamento().withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime fim = inicio.plusHours(1);
-
-        boolean medicoTemAgendamento = repository.medicoTemAgendamento(medico.getId(),StatusAgendamento.AGENDADO, inicio, fim);
-        boolean pacienteTemAgendamento = repository.pacienteTemAgendamento(paciente.getId(), StatusAgendamento.AGENDADO, inicio,fim);
-
-        if(medicoTemAgendamento){
-            throw new ConflitoDeDadosException("Médico {"+ medico.getNome()+"} já possui uma consulta agendada neste horário");
-        }
-        if(pacienteTemAgendamento){
-            throw new ConflitoDeDadosException("Paciente {"+ paciente.getNome()+"} já possui uma consulta agendada neste horário");
-        }
-    }
-
-    public List<AgendamentoResponseDto> findAll(Long medico, Long paciente, LocalDateTime inicio, LocalDateTime fim) {
-        Specification<Agendamento> spec = AgendamentoSpecification.temMedico(medico)
-                .and(AgendamentoSpecification.temPaciente(paciente))
-                .and(AgendamentoSpecification.dataMaior(inicio))
-                .and(AgendamentoSpecification.dataMenor(fim));
-
-        List<Agendamento> agendamentos = repository.findAll(spec);
-
-        return agendamentos.stream().map(mapper::toResponse).toList();
-    }
-
-    public ResponseEntity<AgendamentoResponseDto> findById(Long id) {
-        Agendamento agendamento = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Agendamento com id {" + id + "} não localizado"));
-        return ResponseEntity.ok(mapper.toResponse(agendamento));
-    }
-
-    public ResponseEntity<AgendamentoResponseDto> cancel(AgendamentoRequestDto dto, Long id) throws BadRequestException {
-        Agendamento agendamento = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Agendamento com id {" + id + "} não localizado"));
-
-        verificarCancelamento(dto, agendamento);
-
-        agendamento.setStatus(StatusAgendamento.CANCELADO);
-        agendamento.setMotivoCancelamento(dto.motivoCancelamento());
-        repository.save(agendamento);
-
-        return ResponseEntity.ok(mapper.toResponse(agendamento));
-    }
-
-    private static void verificarCancelamento(AgendamentoRequestDto dto, Agendamento agendamento) throws BadRequestException {
-        if(dto.motivoCancelamento() == null || dto.motivoCancelamento().isBlank()){
-            throw new BadRequestException("Motivo do cancelamento deve ser informado na requisição");
-        }
-        if(agendamento.getStatus().equals(StatusAgendamento.CANCELADO)){
-            throw new BadRequestException("Agendamento com id {" + agendamento.getId() + "} já consta como cancelado");
-        }
-        Duration duration = Duration.between(LocalDateTime.now(), agendamento.getDataAgendamento());
-        if(duration.toHours() < 24){
-            throw new BadRequestException("O cancelamento não respeita o tempo mínimo de 24 horas");
-        }
     }
 }

@@ -15,7 +15,9 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -79,7 +81,13 @@ public class AgendamentoController {
     })
     @PostMapping
     public ResponseEntity<AgendamentoResponseDto> create(@Valid @RequestBody AgendamentoRequestDto dto) throws BadRequestException {
-        return service.create(dto);
+        AgendamentoResponseDto agendamento =  service.create(dto);
+        URI uri =  ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(agendamento.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(agendamento);
     }
 
     @Operation(
@@ -165,7 +173,7 @@ public class AgendamentoController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<AgendamentoResponseDto> findById(@PathVariable Long id) {
-        return service.findById(id);
+        return ResponseEntity.ok().body(service.findById(id));
     }
 
     @Operation(
@@ -219,8 +227,9 @@ public class AgendamentoController {
             )
     })
     @PatchMapping("{id}/cancelar")
-    public ResponseEntity<AgendamentoResponseDto> cancel(@PathVariable Long id, @RequestBody AgendamentoRequestDto dto) throws BadRequestException {
-        return service.cancel(dto, id);
+    public ResponseEntity cancel(@PathVariable Long id, @RequestBody AgendamentoRequestDto dto) throws BadRequestException {
+        service.cancel(dto, id);
+        return ResponseEntity.noContent().build();
     }
 
 }
