@@ -15,7 +15,9 @@ public class Medico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    @Column(unique = true)
     private String email;
+    @Column(unique = true)
     private String crm;
     @Enumerated(EnumType.STRING)
     private Especialidade especialidade;

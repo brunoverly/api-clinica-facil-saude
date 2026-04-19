@@ -3,6 +3,7 @@ package br.com.ClinicaFacilSaude.agendamento;
 import br.com.ClinicaFacilSaude.medico.Medico;
 import br.com.ClinicaFacilSaude.paciente.Paciente;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ public class Agendamento {
     Medico medico;
     @ManyToOne(fetch = FetchType.LAZY)
     Paciente paciente;
+    @Future
     LocalDateTime dataAgendamento;
     @Enumerated(EnumType.STRING)
     StatusAgendamento status;

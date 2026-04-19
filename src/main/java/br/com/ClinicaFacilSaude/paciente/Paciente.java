@@ -2,7 +2,6 @@ package br.com.ClinicaFacilSaude.paciente;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 
 @Builder
 @Getter
@@ -16,8 +15,9 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    @UniqueElements
+    @Column(unique = true)
     private String email;
+    @Column(unique = true)
     private String cpf;
     private String telefone;
     private boolean ativo;
