@@ -12,7 +12,13 @@
 ![JUnit 5](https://img.shields.io/badge/JUnit_5-25A162?style=for-the-badge&logo=junit5&logoColor=white)
 ![Mockito](https://img.shields.io/badge/Mockito-8DCE71?style=for-the-badge)
 
+---
 
+> **Desafio Backend Junior:** Desenvolvimento de uma API RESTful escalável e segura para gerenciamento de agendamentos de consultas médicas, com forte ênfase em regras de negócio e testes unitários.
+
+</div>
+
+<br>
 
 ## 📋 Sobre o Projeto
 O sistema **ClínicaFácil Saúde Digital** foi idealizado para gerenciar pacientes, médicos e o fluxo complexo de agendamentos. O coração da aplicação é a validação estrita de horários, disponibilidade e regras operacionais da clínica, garantindo a integridade dos dados antes de qualquer persistência no banco de dados.
